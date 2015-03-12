@@ -1,4 +1,5 @@
 Teamwork::Application.routes.draw do
+  get "mydetails/index"
   devise_for :users
   get "dashboard/index"
 

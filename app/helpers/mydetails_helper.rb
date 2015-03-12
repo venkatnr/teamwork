@@ -1,0 +1,2 @@
+module MydetailsHelper
+end
