@@ -1,0 +1,26 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @project.name %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @project.description %>
+</p>
+
+<h1>Add people</h1>
+<%#= select_tag("developers[]", options_for_select(@users.collect { |ff| [ff.email, ff.id] }), {:multiple=>true, :size => 1, :id => "developers"}) %>
+
+<div id="project_users"></div>
+<form action="/projects/adding_new_user" data-remote="true" method="post">
+	<input type="hidden" value=<%= @project.id %> name="id">
+	<%= select_tag "users", options_from_collection_for_select(@users, 'id', 'email'), :multiple => true %>
+	<input type="submit" value="Submit">
+</form>
+ <%= render partial: 'project_members', locals: {project_members: @project_members, project: @project} %>
+<br>
+
+<%= link_to 'Edit', edit_project_path(@project) %> |
+<%= link_to 'Back', dashboard_index_path %>
