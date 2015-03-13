@@ -7,7 +7,7 @@ class DashboardController < ApplicationController
   			@projects = Project.all
 			return true
 		else
-			redirect_to mydetails_index_path
+			redirect_to mydashboard_index_path
 		end
 	end
 end

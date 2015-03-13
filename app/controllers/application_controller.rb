@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   	if resource.is_admin?
     	 dashboard_index_path
     else
-    	 mydetails_index_path
+    	 mydashboard_index_path
     end
   end
 end

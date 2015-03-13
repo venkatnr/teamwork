@@ -1,16 +1,19 @@
 Teamwork::Application.routes.draw do
 
 
-  get "mydetails/index"
   devise_for :users
   get "dashboard/index"
 
   resources :projects do
     collection do
-    post "adding_new_user"
+      post "adding_new_user"
     end
   end
   
+  resources :mydashboard do 
+    get 'project_details/:id' => 'projects#project_details', as: :project_details
+  end
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

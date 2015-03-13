@@ -1,5 +1,6 @@
 class ProjectsController < ApplicationController
-  before_action :set_project, only: [:show, :edit, :update, :destroy, :adding_new_user]
+  before_filter :authenticate_user!
+  before_action :set_project, only: [:show, :edit, :update, :destroy, :adding_new_user, :project_details]
 
   respond_to :html
 
@@ -44,6 +45,10 @@ class ProjectsController < ApplicationController
           @project_members = @project.get_project_members
       end
       respond_to :js
+  end
+
+  def project_details
+
   end
 
   private

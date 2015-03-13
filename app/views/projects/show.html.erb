@@ -17,8 +17,9 @@
 <form action="/projects/adding_new_user" data-remote="true" method="post">
 	<input type="hidden" value=<%= @project.id %> name="id">
 	<%= select_tag "users", options_from_collection_for_select(@users, 'id', 'email'), :multiple => true %>
-	<input type="submit" value="Submit">
+	<input type="submit" value="Add developers">
 </form>
+
  <%= render partial: 'project_members', locals: {project_members: @project_members, project: @project} %>
 <br>
 
