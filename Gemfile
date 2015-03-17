@@ -17,7 +17,7 @@ gem 'uglifier', '>= 1.3.0'
 gem "devise"
 
 gem 'chosen-rails'
-
+gem 'bootstrap-datepicker-rails'
 # Use CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails', '~> 4.0.0'
 

@@ -10,9 +10,13 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    @users = User.get_all_developers
-    @project_members = @project.get_project_members
-    respond_with(@project)
+    if current_user.is_admin? || (current_user.projects.map(&:id).include?(@project.id))
+      @users = User.get_all_developers if current_user.is_admin?
+      @project_members = @project.get_project_members if current_user.is_admin?
+      respond_with(@project)
+    else
+      redirect_to root_path
+    end
   end
 
   def new
@@ -49,6 +53,10 @@ class ProjectsController < ApplicationController
 
   def project_details
 
+  end
+
+  def submit_dev_timesheet
+    Project.add_timmings_to_users(params, current_user)
   end
 
   private

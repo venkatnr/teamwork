@@ -7,7 +7,8 @@ class User < ActiveRecord::Base
   # association 
   has_and_belongs_to_many :roles
   has_and_belongs_to_many :projects
-
+  has_many :project_details
+  
   def is_admin?
   	(self.roles.first.name == "admin") ? true : false  
   end
