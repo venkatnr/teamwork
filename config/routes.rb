@@ -8,8 +8,20 @@ Teamwork::Application.routes.draw do
       post "adding_new_user"
       post "submit_dev_timesheet"
     end
+      member do
+        delete 'users/:id' => 'projects#remove_allocated_user', :as => :remove_allocated_user
+      end
   end
-  
+
+  resources :timesheet, :only => [] do
+    collection do
+      get "user_timesheet"
+      post "create_time_sheet"
+    end
+  end
+
+  # delete '/projects/:id/users/:id' => 'projects#remove_allocated_user', as: :remove_allocated_user
+
   resources :mydashboard do
     collection do 
       get 'project_details'

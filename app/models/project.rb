@@ -1,6 +1,7 @@
 class Project < ActiveRecord::Base
 	has_and_belongs_to_many :users
 	has_many :project_details
+	scope :current_running_projects, -> { where(" status = ?", true).count}
 
 	def get_project_members
 		self.users

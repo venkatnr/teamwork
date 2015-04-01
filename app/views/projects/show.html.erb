@@ -1,87 +1,105 @@
-<p id="notice"><%= notice %></p>
+<div id="page-wrapper">
+    <div class="row">
+        <p>
+          <strong>Name:</strong>
+          <%= @project.name %>
+        </p>
 
-<p>
-  <strong>Name:</strong>
-  <%= @project.name %>
-</p>
+        <p>
+          <strong>Description:</strong>
+          <%= @project.description %>
+        </p>
 
-<p>
-  <strong>Description:</strong>
-  <%= @project.description %>
-</p>
+        <% if current_user.is_admin? %>
+            <%#= select_tag("developers[]", options_for_select(@users.collect { |ff| [ff.email, ff.id] }), {:multiple=>true, :size => 1, :id => "developers"}) %>
+            <div id="project_users"></div>
+            <form action="/projects/adding_new_user" data-remote="true" method="post">
+                <input type="hidden" value=<%= @project.id %> name="id">
+                <%= select_tag "users", options_from_collection_for_select(@users, 'id', 'email'), :multiple => true %>
 
-<% if current_user.is_admin? %>
-	<h1>Add people</h1>
-	<%#= select_tag("developers[]", options_for_select(@users.collect { |ff| [ff.email, ff.id] }), {:multiple=>true, :size => 1, :id => "developers"}) %>
-	<div id="project_users"></div>
-	<form action="/projects/adding_new_user" data-remote="true" method="post">
-		<input type="hidden" value=<%= @project.id %> name="id">
-		<%= select_tag "users", options_from_collection_for_select(@users, 'id', 'email'), :multiple => true %>
-		<input type="submit" value="Add developers">
-	</form>
+                <input type="submit" value="Add developers">
+            </form>
 
-	 <%= render partial: 'project_members', locals: {project_members: @project_members, project: @project} %>
-	<br>
+             <%= render partial: 'project_members', locals: {project_members: @project_members, project: @project} %>
+            <br>
 
-	<%= link_to 'Edit', edit_project_path(@project) %> |
-	<%= link_to 'Back', dashboard_index_path %>
+            <%= link_to 'Edit', edit_project_path(@project) %> |
+            <%= link_to 'Back', dashboard_index_path %>
 
-<% else %>
-	<input type="text" class="form-control  datepicker" id="datepicker" data-date-format="dd/mm/yyyy" />
-<% end %>
+        <% else %>
+            <input type="text" class="form-control  datepicker" id="datepicker" data-date-format="dd/mm/yyyy" />
+        <% end %>
 
-<button class="btn btn-primary add_field_button">Add Developer details</button>
-<button class="btn btn-primary submit_time_sheet">Submit</button>
+        <button class="btn btn-primary add_field_button">Add Developer details</button>
+        <button class="btn btn-primary submit_time_sheet">Submit</button>
 
-<hr/>
 
-<form id="getsearchdetails_beforelogin">
-	<div class="input_fields_wrap">
-	    <div id="dev_details_group">
-		    <span>
-		    	<input type="text" class="form-control" name="description" id="description" placeholder="Please enter description on task"/>
-		    </span>
-		    <span>
-		    	<input type="text" class="form-control" name="hours" id="hours" placeholder="Please enter how many hours"/>
-		    </span>
-	    </div>
-	</div>
-</form>
+        <form id="getsearchdetails_beforelogin">
+            <div class="input_fields_wrap">
+                <div id="dev_details_group">
+                    <span>
+                        <input type="text" class="form-control" name="description" id="description" placeholder="Please enter description on task"/>
+                    </span>
+                    <span>
+                        <input type="text" class="form-control" name="hours" id="hours" placeholder="Please enter how many hours"/>
+                    </span>
+                </div>
+            </div>
+        </form>
 
-<div id="show_developer_attendence_list"><%= render :partial => '/projects/developer_timesheet', :locals=>{:timedetails => @data}%></div>
+        <div id="show_developer_attendence_list"><%= render :partial => '/projects/developer_timesheet', :locals=>{:timedetails => @data}%></div>
 
-<script type="text/javascript">
-  $(document).ready(function(){
-  	var today = new Date();
-  	var lastDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-	$('#datepicker').datepicker({
-	        autoclose: true,
-	        // todayBtn: true,
-	        startDate: today,
-    		endDate: lastDate
-	});
 
-	$('#datepicker').datepicker().on('changeDate', function(ev){                 
-	    var day1 = $("#datepicker").datepicker('getDate').getDate();                 
-        var month1 = $("#datepicker").datepicker('getDate').getMonth() + 1;             
-        var year1 = $("#datepicker").datepicker('getDate').getFullYear();
-        var fullDate = year1 + "-" + month1 + "-" + day1;                
-	   
-	});
-  });
-</script>
+        <script type="text/javascript">
+          $(document).ready(function(){
+            var today = new Date();
+            var lastDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            $('#datepicker').datepicker({
+                    autoclose: true,
+                    // todayBtn: true,
+                    startDate: today,
+                    endDate: lastDate
+            });
 
-<script type="text/javascript">
+            $('#datepicker').datepicker().on('changeDate', function(ev){                 
+                var day1 = $("#datepicker").datepicker('getDate').getDate();                 
+                var month1 = $("#datepicker").datepicker('getDate').getMonth() + 1;             
+                var year1 = $("#datepicker").datepicker('getDate').getFullYear();
+                var fullDate = year1 + "-" + month1 + "-" + day1;                
+               
+            });
 
-$( ".submit_time_sheet" ).click(function() 
-{
- 		var day1 = $("#datepicker").datepicker('getDate').getDate();                 
-        var month1 = $("#datepicker").datepicker('getDate').getMonth() + 1;             
-        var year1 = $("#datepicker").datepicker('getDate').getFullYear();
-        var fullDate = year1 + "-" + month1 + "-" + day1;                
-	   
-	var form_values = jQuery('#getsearchdetails_beforelogin').serializeArray();
-	$.ajax({url: "/projects/submit_dev_timesheet", type: 'post', data: {form_values:form_values, date: fullDate, project_id: <%= @project.id %>} });
-});
+            $( ".submit_time_sheet" ).click(function() 
+            {
+                    var day1 = $("#datepicker").datepicker('getDate').getDate();                 
+                    var month1 = $("#datepicker").datepicker('getDate').getMonth() + 1;             
+                    var year1 = $("#datepicker").datepicker('getDate').getFullYear();
+                    var fullDate = year1 + "-" + month1 + "-" + day1;                
+                   
+                var form_values = jQuery('#getsearchdetails_beforelogin').serializeArray();
+                $.ajax({url: "/projects/submit_dev_timesheet", type: 'post', data: {form_values:form_values, date: fullDate, project_id: <%= @project.id %>} });
+            });
 
-</script>
+                $(document).ready(function() {
+                var max_fields      = 6; //maximum input boxes allowed
+                var wrapper         = $(".input_fields_wrap"); //Fields wrapper
+                var add_button      = $(".add_field_button"); //Add button ID
+               
+                var x = 1; //initlal text box count
+                $(add_button).click(function(e){ //on add input button click
+                    e.preventDefault();
+                    if(x < max_fields){ //max input box allowed
+                        x++; //text box increment
+                        $(wrapper).append('<div id="dev_details_group" style="margin-top: 10px;"> <span><input type="text" class="form-control" name="description" placeholder="Please enter description on task"/></span> <span><input type="text" class="form-control" name="hours" placeholder="Please enter how many hours"/></span>    <a class="remove_field" style="cursor:pointer;">Remove</a></div>'); //add input box
+                    }
+                });
+               
+                $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
+                    e.preventDefault(); $(this).parent('div#dev_details_group').remove(); x--;
+                })
+            });
+          });
+        </script>
+
+    </div>
+</div>

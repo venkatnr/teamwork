@@ -8,12 +8,13 @@ class User < ActiveRecord::Base
   has_and_belongs_to_many :roles
   has_and_belongs_to_many :projects
   has_many :project_details
-  
+  scope :get_active_user_count, -> { joins(:roles).where("roles.name != 'Admin' AND status = ?", true).count}
+
   def is_admin?
-  	(self.roles.first.name == "admin") ? true : false  
+  	(self.roles.first.name == "Admin") ? true : false  
   end
 
   def self.get_all_developers
-  	User.joins(:roles).where("roles.name != 'admin'")
+  	User.joins(:roles).where("roles.name != 'Admin'")
   end
 end

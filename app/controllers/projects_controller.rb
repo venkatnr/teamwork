@@ -1,12 +1,12 @@
 class ProjectsController < ApplicationController
   before_filter :authenticate_user!
   before_action :set_project, only: [:show, :edit, :update, :destroy, :adding_new_user, :project_details]
+  layout :apply_layout
 
   respond_to :html
 
   def index
-    @projects = Project.all
-    
+    @projects = current_user.is_admin? ? (Project.all) : current_user.projects 
   end
 
   def show
@@ -21,7 +21,7 @@ class ProjectsController < ApplicationController
 
   def new
     @project = Project.new
-    respond_with(@project)
+    respond_to :js if request.xhr?
   end
 
   def edit
@@ -30,7 +30,7 @@ class ProjectsController < ApplicationController
   def create
     @project = Project.new(project_params)
     @project.save
-    respond_with(@project)
+    respond_to :js if request.xhr?
   end
 
   def update
@@ -51,20 +51,32 @@ class ProjectsController < ApplicationController
       respond_to :js
   end
 
-  def project_details
-
+  def remove_allocated_user
+    assignment = Project.find(params[:assignment_id])
+    candidate = assignment.candidates.find(params[:candidate_ids])
+    assignment.candidates.delete(candidate)
   end
 
   def submit_dev_timesheet
     Project.add_timmings_to_users(params, current_user)
+    respond_to :js
   end
 
   private
-    def set_project
-      @project = Project.find(params[:id])
-    end
 
-    def project_params
-      params.require(:project).permit(:name, :description)
+  def apply_layout
+    if current_user.is_admin?
+      'admin_layout'
+    else
+      'user_layout'
     end
+  end
+
+  def set_project
+    @project = Project.find(params[:id])
+  end
+
+  def project_params
+    params.require(:project).permit(:name, :description, :status, :total_hours)
+  end
 end

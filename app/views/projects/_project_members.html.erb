@@ -1,4 +1,4 @@
 <% project_members.each do |user|%>
 	<%= user.email %>
-	<%= link_to 'delete', edit_project_path(project) , :remote => true %> <br>
+	<%= link_to 'delete', remove_allocated_user_project_path(project.id, user.id ) , :method => "DELETE", :remote => true %> <br>
 <% end %>

@@ -5,3 +5,11 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+
+
+Role.create(:name=>"Admin")
+Role.create(:name=>"User")
+
+
+usr = User.create(:email=>"admin@teamwork.com",:password=>"admin123",:password_confirmation=>"admin123")
+usr.roles << Role.find(:all,:conditions=>['name IN (?)', ['Admin']])
